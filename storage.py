@@ -9,6 +9,7 @@ MIN_TIMEOUT = 0.1
 MAX_TIMEOUT = 15 * 60
 TIMEOUT_FACTOR = 2
 TIMEOUT_JITTER = 0.1
+ATTEMPTS = 20
 
 
 def retrys(attempts):
@@ -44,38 +45,37 @@ class TarantoolConnection:
         self.timeout = timeout
         self.user = user
         self.password = password
-        self.connection = None
+        self.connection = self.get_connection()
 
     def get_connection(self):
         connection = tarantool.connect(self.host, self.port, self.user, self.password)
         return connection.space(0)
 
-    @retrys
+    @retrys(ATTEMPTS)
     def get(self, key):
         try:
-            connect = self.get_connection()
-            value = connect.select(key)
+            value = self.connection.select(key)
             if value is not None:
                 return value
-        except tarantool.error.NetworkError as e:
-            raise ValueError(e)
-        except:
-            raise ValueError("ConnectionError")
-
-    @retrys
-    def cache_get(self, key):
-        return self.get(key)
-
-    @retrys
-    def set(self, key, value):
-        try:
-            connect = self.get_connection()
-            connect.insert(key, value)
         except tarantool.error.NetworkError as e:
             raise ValueError(e)
         except Exception as e:
             raise ValueError(e)
 
-    @retrys
+    @retrys(ATTEMPTS)
+    def cache_get(self, key):
+        return self.get(key)
+
+    @retrys(ATTEMPTS)
+    def set(self, key, value):
+        try:
+            self.connection.insert(key, value)
+            return True
+        except tarantool.error.NetworkError as e:
+            raise ValueError(e)
+        except Exception as e:
+            raise ValueError(e)
+
+    @retrys(ATTEMPTS)
     def cache_set(self, key, value):
         return self.set(key, value)

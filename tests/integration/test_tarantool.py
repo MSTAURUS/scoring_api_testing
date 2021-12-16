@@ -16,7 +16,9 @@ class TestSuite_Tarantool(unittest.TestCase):
         self.port = 3301
         self.user = "username"
         self.password = "password"
-        self.srv = TarantoolConnection()
+        self.srv = TarantoolConnection(
+            host=self.host, port=self.port, user=self.user, password=self.password
+        )
 
     def test_get_connection(self):
         with self.assertRaises(ValueError):
@@ -24,18 +26,16 @@ class TestSuite_Tarantool(unittest.TestCase):
 
     def test_set(self):
         """Testing VALID Tarantool.set"""
-        con = self.srv.get_connection()
-        con.set('{"1": ["books", "hi-tech"]} ')
+        self.assertTrue(self.srv.set('{"1": ["books", "hi-tech"]} '))
 
     def test_invalid_set(self):
         """Testing INVALID Tarantool.set"""
-        con = self.srv.get_connection()
         with self.assertRaises(ValueError):
-            con.set("qqqqq ")
+            self.srv.set("qqqqq ")
 
     def test_get(self):
         """Testing VALID Tarantool.get"""
-        self.srv.get("1")
+        self.assertIsNotNone(self.srv.get("1"))
 
     def test_invalid_get(self):
         """Testing INVALID Tarantool.get"""
