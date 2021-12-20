@@ -171,7 +171,10 @@ def method_handler(request, ctx: Dict[str, str], store: Dict[str, str]):
 class MainHTTPHandler(BaseHTTPRequestHandler):
     router = {"method": method_handler}
     store = TarantoolConnection()
-    # store.connection = store.get_connection()
+    try:
+        store.connection = store.get_connection()
+    except Exception as e:
+        logging.exception("Storage connection error: %s" % e)
 
     def get_request_id(self, headers: str):
         return headers.get("HTTP_X_REQUEST_ID", uuid.uuid4().hex)
