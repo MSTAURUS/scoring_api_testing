@@ -27,8 +27,9 @@ class TestCharField(unittest.TestCase):
     @cases(["", "Test", "/test", "\\test"])
     def test_valid_value(self, val):
         """Testing VALID CharField"""
-        with self.assertTrue:
+        self.assertIsNotNone(
             api.CharField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases([1, -1])
     def test_invalid_value(self, val):
@@ -41,8 +42,9 @@ class TestArgumentsField(unittest.TestCase):
     @cases([{}, {"key": "val"}])
     def test_valid_value(self, val):
         """Testing VALID ArgumentsField"""
-        with self.assertTrue:
+        self.assertIsNotNone(
             api.ArgumentsField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases([True, -1, "", ["key", "val"]])
     def test_invalid_value(self, val):
@@ -55,8 +57,9 @@ class TestEmailField(unittest.TestCase):
     @cases(["a@b.ru", "e@mail.ru"])
     def test_valid_value(self, val):
         """Testing VALID EmailField"""
-        with self.assertTrue:
+        self.assertTrue(
             api.EmailField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases(["test_user", 1, 0.1])
     def test_invalid_value(self, val):
@@ -69,8 +72,9 @@ class TestPhoneField(unittest.TestCase):
     @cases(["79123457890", 70987654321])
     def test_valid_value(self, val):
         """Testing VALID PhoneField"""
-        with self.assertTrue:
+        self.assertTrue(
             api.PhoneField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases(["81234567890", 80987654321, 709876543211, -1])
     def test_invalid_value(self, val):
@@ -83,8 +87,9 @@ class TestDateField(unittest.TestCase):
     @cases(["01.05.1987"])
     def test_valid_value(self, val):
         """Testing VALID DateField"""
-        with self.assertTrue:
+        self.assertTrue(
             api.DateField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases(["01-01-2000", "01.01.00", "01.18.2000", "33.01.2000", 1012000])
     def test_invalid_value(self, val):
@@ -97,8 +102,9 @@ class TestBirthDayField(unittest.TestCase):
     @cases(["01.05.1987"])
     def test_valid_value(self, val):
         """Testing VALID BirthDayField"""
-        with self.assertTrue:
+        self.assertTrue(
             api.BirthDayField(required=False, nullable=True).validate(value=val)
+        )
 
     @cases(["01.01.1917"])
     def test_invalid_value(self, val):
@@ -111,8 +117,9 @@ class TestGenderField(unittest.TestCase):
     @cases([0, 1, 2])
     def test_valid_value(self, val):
         """Testing VALID GenderField"""
-        with self.assertTrue:
+        self.assertIsNotNone(
             api.GenderField(required=False, nullable=True).validate(val=val)
+        )
 
     @cases(["", "q", -1, 3])
     def test_invalid_value(self, val):
@@ -125,8 +132,9 @@ class ClientIDsField(unittest.TestCase):
     @cases([[0, 1], [1]])
     def test_valid_value(self, val):
         """Testing VALID ClientIDsField"""
-        with self.assertTrue:
+        self.assertTrue(
             api.ClientIDsField(required=False, nullable=True).validate(val=val)
+        )
 
     @cases([[], {"key": 1}, "text", [1, "a"], [1.1, 2.2], [[1, 2], [3, 4]]])
     def test_invalid_value(self, val):

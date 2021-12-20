@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import tarantool
 import unittest
 import warnings
@@ -9,13 +10,21 @@ import api
 from tests.utils import cases
 from storage import TarantoolConnection
 
+HOST = os.environ.get("TARANTOOL_HOST", "")
+PORT = os.environ.get("TARANTOOL_PORT", "")
+USERNAME = os.environ.get("TARANTOOL_USERNAME", "")
+PASSWORD = os.environ.get("TARANTOOL_PWD", "")
 
+SKIPING_TEST_FLG = True if HOST == '' or PORT == '' else False
+
+
+@unittest.skipIf(SKIPING_TEST_FLG, "No DB connection params")
 class TestSuite_Tarantool(unittest.TestCase):
     def setUp(self):
-        self.host = "localhost"
-        self.port = 3301
-        self.user = "username"
-        self.password = "password"
+        self.host = HOST
+        self.port = PORT
+        self.user = USERNAME
+        self.password = PASSWORD
         self.srv = TarantoolConnection(
             host=self.host, port=self.port, user=self.user, password=self.password
         )

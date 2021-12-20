@@ -45,7 +45,7 @@ class TarantoolConnection:
         self.timeout = timeout
         self.user = user
         self.password = password
-        self.connection = self.get_connection()
+        self.connection = None
 
     def get_connection(self):
         connection = tarantool.connect(self.host, self.port, self.user, self.password)
@@ -57,8 +57,6 @@ class TarantoolConnection:
             value = self.connection.select(key)
             if value is not None:
                 return value
-        except tarantool.error.NetworkError as e:
-            raise ValueError(e)
         except Exception as e:
             raise ValueError(e)
 
@@ -71,8 +69,6 @@ class TarantoolConnection:
         try:
             self.connection.insert(key, value)
             return True
-        except tarantool.error.NetworkError as e:
-            raise ValueError(e)
         except Exception as e:
             raise ValueError(e)
 
