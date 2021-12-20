@@ -47,6 +47,7 @@ class TarantoolConnection:
         self.password = password
         self.connection = None
 
+    @retrys(ATTEMPTS)
     def get_connection(self):
         connection = tarantool.connect(self.host, self.port, self.user, self.password)
         return connection.space(0)
